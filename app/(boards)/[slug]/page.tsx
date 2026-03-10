@@ -29,7 +29,10 @@ export default async function BoardDetailPage({ params }: Props) {
     <main className="min-h-screen bg-slate-50 relative overflow-hidden">
       {/* Header */}
       <header
-        className={`sticky top-0 z-30 bg-gradient-to-r ${board.bgGradient} text-white shadow-md`}
+        className="sticky top-0 z-30 text-white shadow-md"
+        style={{
+          backgroundImage: `linear-gradient(to right, ${primaryColor}, ${accentColor})`,
+        }}
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">

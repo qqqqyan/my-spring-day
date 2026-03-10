@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { Reorder } from "framer-motion";
 import { useRef } from "react";
 import { useBoardOrder } from "./useBoardOrder";
-import type { Board } from "@/lib/data/boardsData";
+import { parseGradientColors, type Board } from "@/lib/data/boardsData";
 
 const container = {
   hidden: { opacity: 0 },
@@ -23,6 +23,7 @@ const item = {
 function BoardCard({ board }: { board: Board }) {
   const Icon = board.icon;
   const isDragging = useRef(false);
+  const [from, to] = parseGradientColors(board.bgGradient);
 
   return (
     <Reorder.Item
@@ -48,14 +49,10 @@ function BoardCard({ board }: { board: Board }) {
         draggable={false}
       >
         <div
-          className={`
-            rounded-2xl shadow-lg ${board.shadowColor}
-            bg-gradient-to-br ${board.bgGradient}
-            p-6 h-48 sm:h-64 flex flex-col justify-between
-            transition-all duration-300
-            group-hover:scale-[1.02] group-hover:shadow-xl
-            select-none
-          `}
+          className="rounded-2xl shadow-lg p-6 h-48 sm:h-64 flex flex-col justify-between transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-xl select-none"
+          style={{
+            backgroundImage: `linear-gradient(to bottom right, ${from}, ${to})`,
+          }}
         >
           <div className="flex items-start justify-between">
             <div

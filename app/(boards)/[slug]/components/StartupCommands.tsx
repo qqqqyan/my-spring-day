@@ -81,7 +81,10 @@ export default function StartupCommands({
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     {/* Step number dot */}
-                    <div className="absolute -left-[13px] top-1 w-6 h-6 rounded-full bg-blue-500 border-4 border-white shadow-sm flex items-center justify-center">
+                    <div
+                      className="absolute -left-[13px] top-1 w-6 h-6 rounded-full border-4 border-white shadow-sm flex items-center justify-center"
+                      style={{ backgroundColor: accentColor }}
+                    >
                       <span className="text-[10px] font-bold text-white">
                         {index + 1}
                       </span>

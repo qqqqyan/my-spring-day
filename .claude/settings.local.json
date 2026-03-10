@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"c:\\\\Users\\\\Qianyan Liu\\\\Desktop\\\\AIProjects\\\\my-spring-day\\\\app\\\\\\(boards\\)\\\\[slug]\" -type f -name \"*.tsx\" -o -name \"*.ts\")",
+      "Bash(node -e \"console.log\\(require\\(''tailwindcss/package.json''\\).version\\)\")"
+    ]
+  }
+}

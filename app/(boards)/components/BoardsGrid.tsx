@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { Reorder } from "framer-motion";
 import { useRef } from "react";
 import { useBoardOrder } from "./useBoardOrder";
-import type { Board } from "./boardsData";
+import type { Board } from "@/lib/data/boardsData";
 
 const container = {
   hidden: { opacity: 0 },
@@ -30,13 +30,21 @@ function BoardCard({ board }: { board: Board }) {
       variants={item}
       className="w-full list-none cursor-grab active:cursor-grabbing"
       whileDrag={{ scale: 1.03, zIndex: 50 }}
-      onDragStart={() => { isDragging.current = true; }}
-      onDragEnd={() => { setTimeout(() => { isDragging.current = false; }, 0); }}
+      onDragStart={() => {
+        isDragging.current = true;
+      }}
+      onDragEnd={() => {
+        setTimeout(() => {
+          isDragging.current = false;
+        }, 0);
+      }}
     >
       <Link
         href={`/${board.slug}`}
         className="block group"
-        onClick={(e) => { if (isDragging.current) e.preventDefault(); }}
+        onClick={(e) => {
+          if (isDragging.current) e.preventDefault();
+        }}
         draggable={false}
       >
         <div
@@ -62,9 +70,7 @@ function BoardCard({ board }: { board: Board }) {
             <h2 className="text-2xl font-bold text-white drop-shadow-sm">
               {board.name} ({board.nameEn})
             </h2>
-            <p className="text-white/90 text-sm mt-0.5">
-              {board.description}
-            </p>
+            <p className="text-white/90 text-sm mt-0.5">{board.description}</p>
           </div>
         </div>
       </Link>
@@ -72,7 +78,11 @@ function BoardCard({ board }: { board: Board }) {
   );
 }
 
-export default function BoardsGrid({ initialSlugs }: { initialSlugs?: string[] }) {
+export default function BoardsGrid({
+  initialSlugs,
+}: {
+  initialSlugs?: string[];
+}) {
   const { boards, reorder } = useBoardOrder(initialSlugs);
 
   return (

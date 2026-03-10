@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import TimelineLog from "../(boards)/[slug]/TimelineLog";
+import TimelineLog from "@/components/TimelineLog";
 
 export default function AllLogsPage() {
   return (

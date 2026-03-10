@@ -1,7 +1,15 @@
-import { Calendar, Clock, ImageIcon, Video, Mic, FileText, Quote } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  ImageIcon,
+  Video,
+  Mic,
+  FileText,
+  Quote,
+} from "lucide-react";
 import { getDiariesBySlug, getAllDiaries } from "@/lib/actions/diary";
 import type { Attachment } from "@/lib/types/diary";
-import { getBoardBySlug, parseGradientColors } from "../boardsData";
+import { getBoardBySlug, parseGradientColors } from "@/lib/data/boardsData";
 
 function AttachmentRenderer({ attachment }: { attachment: Attachment }) {
   const { file_type, public_url, file_name } = attachment;
@@ -74,7 +82,9 @@ export default async function TimelineLog(props: Props) {
   if (diaries.length === 0) {
     return (
       <div className="max-w-3xl mx-auto py-16 px-4 text-center">
-        <p className="text-slate-400 text-lg">还没有记录，点击右下角的笔开始写日记吧</p>
+        <p className="text-slate-400 text-lg">
+          还没有记录，点击右下角的笔开始写日记吧
+        </p>
       </div>
     );
   }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X, ListChecks } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { STEPS } from "./stepsData";
+import { STEPS } from "@/lib/data/stepsData";
 
 export default function StartupCommands({
   slug,

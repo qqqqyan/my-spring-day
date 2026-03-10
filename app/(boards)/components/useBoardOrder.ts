@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { BOARDS, type Board } from "./boardsData";
+import { BOARDS, type Board } from "@/lib/data/boardsData";
 
 const COOKIE_KEY = "boards-order";
 
@@ -27,8 +27,8 @@ export function orderBoardsBySlugs(slugs: string[]): Board[] {
 }
 
 export function useBoardOrder(initialSlugs?: string[]) {
-  const [boards, setBoards] = useState<Board[]>(
-    () => initialSlugs ? orderBoardsBySlugs(initialSlugs) : BOARDS,
+  const [boards, setBoards] = useState<Board[]>(() =>
+    initialSlugs ? orderBoardsBySlugs(initialSlugs) : BOARDS,
   );
 
   const reorder = useCallback((newOrder: Board[]) => {

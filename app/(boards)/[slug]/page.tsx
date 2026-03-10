@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import StartupCommands from "./StartupCommands";
-import TimelineLog from "./TimelineLog";
-import AIChatDrawer from "./AIChatDrawer";
-import { getBoardBySlug, parseGradientColors } from "../boardsData";
-import { NewLogModal } from "./NewLogModal";
+import TimelineLog from "@/components/TimelineLog";
+import { getBoardBySlug, parseGradientColors } from "@/lib/data/boardsData";
+import StartupCommands from "./components/StartupCommands";
+import AIChatDrawer from "./components/AIChatDrawer";
+import { NewLogModal } from "./components/NewLogModal";
 
 type Props = { params: Promise<{ slug: string }> };
 

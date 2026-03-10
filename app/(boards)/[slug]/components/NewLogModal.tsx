@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useRef, useTransition } from "react";
-import { Modal } from "./Modal";
 import {
   Quote,
   Paperclip,
@@ -14,6 +13,7 @@ import {
   Pen,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Modal } from "@/components/Modal";
 import { createDiary } from "@/lib/actions/diary";
 
 interface NewLogModalProps {
@@ -226,9 +226,7 @@ export function NewLogModal({ accentColor, slug }: NewLogModalProps) {
             </button>
           </div>
 
-          {error && (
-            <p className="text-sm text-red-500 text-center">{error}</p>
-          )}
+          {error && <p className="text-sm text-red-500 text-center">{error}</p>}
         </form>
       </Modal>
     </>

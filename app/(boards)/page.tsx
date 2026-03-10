@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Clock } from "lucide-react";
 import { cookies } from "next/headers";
-import BoardsGrid from "./BoardsGrid";
+import BoardsGrid from "./components/BoardsGrid";
 
 export default async function BoardsPage() {
   const cookieStore = await cookies();

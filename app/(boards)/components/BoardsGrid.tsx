@@ -131,7 +131,7 @@ export default function BoardsGrid({
         variants={container}
         initial="hidden"
         animate="show"
-        className="flex flex-col gap-4 md:gap-6 max-w-3xl w-10/12"
+        className="flex flex-col gap-4 md:gap-6 max-w-3xl md:w-10/12 w-full"
       >
         {boards.map((board) => (
           <BoardCard

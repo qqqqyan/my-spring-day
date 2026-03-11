@@ -7,6 +7,13 @@ export const config = {
 export function middleware(req: NextRequest) {
   if (process.env.NODE_ENV === "development") return NextResponse.next();
 
+  const publicPwaAssets = ["/apple-icon.png", "/favicon.ico", "/icon.png"];
+  const { pathname } = req.nextUrl;
+
+  if (publicPwaAssets.includes(pathname) || pathname.startsWith("/_next/")) {
+    return NextResponse.next();
+  }
+
   const basicAuth = req.headers.get("authorization");
   const url = req.nextUrl;
 

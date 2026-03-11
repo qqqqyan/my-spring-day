@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import TimelineLog from "@/components/TimelineLog";
+import { ScrollRestorer } from "@/components/ScrollRestorer";
 
 export default function AllLogsPage() {
   return (
     <main className="min-h-screen bg-slate-50">
+      <ScrollRestorer pageKey="logs" />
       <header className="sticky top-0 z-30 bg-gradient-to-r from-slate-700 to-slate-900 text-white shadow-md">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-4">
           <Link

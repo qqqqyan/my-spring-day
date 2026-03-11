@@ -14,7 +14,7 @@ export async function getDiariesBySlug(slug: string): Promise<Diary[]> {
       `
       *,
       attachments (*)
-    `
+    `,
     )
     .eq("slug", slug)
     .order("created_at", { ascending: false });
@@ -33,7 +33,7 @@ export async function getDiariesBySlug(slug: string): Promise<Diary[]> {
         public_url: supabase.storage
           .from("diary-attachments")
           .getPublicUrl(att.storage_path).data.publicUrl,
-      })
+      }),
     ),
   }));
 }
@@ -48,7 +48,7 @@ export async function getAllDiaries(): Promise<Diary[]> {
       `
       *,
       attachments (*)
-    `
+    `,
     )
     .order("created_at", { ascending: false });
 
@@ -65,14 +65,14 @@ export async function getAllDiaries(): Promise<Diary[]> {
         public_url: supabase.storage
           .from("diary-attachments")
           .getPublicUrl(att.storage_path).data.publicUrl,
-      })
+      }),
     ),
   }));
 }
 
 // ── 创建日记 ────────────────────────────────────────────────
 export async function createDiary(
-  formData: FormData
+  formData: FormData,
 ): Promise<ActionResult<{ id: string }>> {
   const supabase = createServerSupabaseClient();
 
@@ -127,6 +127,7 @@ export async function createDiary(
 
   // 3. 刷新页面缓存
   revalidatePath(`/${slug}`);
+  revalidatePath("/logs");
 
   return { success: true, data: { id: diary.id } };
 }

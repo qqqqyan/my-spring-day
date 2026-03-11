@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { Reorder } from "framer-motion";
+import { Reorder, motion } from "framer-motion";
 import { useRef } from "react";
-import { useBoardOrder } from "./useBoardOrder";
+import { useBoardOrder } from "../hooks/useBoardOrder";
+import { useDragMode } from "../hooks/useDragMode";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { parseGradientColors, type Board } from "@/lib/data/boardsData";
 
 const container = {
@@ -20,57 +22,90 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-function BoardCard({ board }: { board: Board }) {
+/** 抖动动画参数 */
+const wobbleAnimate = { rotate: [-0.5, 0.5] };
+const wobbleTransition = {
+  repeat: Infinity,
+  repeatType: "mirror" as const,
+  duration: 0.15,
+};
+const stillTransition = { duration: 0.2 };
+
+interface BoardCardProps {
+  board: Board;
+  isDragMode: boolean;
+  longPressHandlers: () => React.HTMLAttributes<HTMLElement>;
+  justActivatedRef: React.MutableRefObject<boolean>;
+}
+
+function BoardCard({
+  board,
+  isDragMode,
+  longPressHandlers,
+  justActivatedRef,
+}: BoardCardProps) {
   const Icon = board.icon;
-  const isDragging = useRef(false);
+  const isDraggingRef = useRef(false);
   const [from, to] = parseGradientColors(board.bgGradient);
 
   return (
     <Reorder.Item
       value={board}
       variants={item}
-      className="w-full list-none cursor-grab active:cursor-grabbing"
-      whileDrag={{ scale: 1.03, zIndex: 50 }}
+      dragListener={isDragMode}
+      className={`list-none ${isDragMode ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"}`}
+      whileDrag={{ scale: 1.03, zIndex: 50, rotate: 0 }}
       onDragStart={() => {
-        isDragging.current = true;
+        isDraggingRef.current = true;
       }}
       onDragEnd={() => {
         setTimeout(() => {
-          isDragging.current = false;
+          isDraggingRef.current = false;
         }, 0);
       }}
     >
-      <Link
-        href={`/${board.slug}`}
-        className="block group"
-        onClick={(e) => {
-          if (isDragging.current) e.preventDefault();
-        }}
-        draggable={false}
+      {/* 独立 motion.div 负责抖动，不干扰 Reorder.Item 的入场 variants */}
+      <motion.div
+        animate={isDragMode ? wobbleAnimate : { rotate: 0 }}
+        transition={isDragMode ? wobbleTransition : stillTransition}
       >
-        <div
-          className="rounded-2xl shadow-lg p-6 h-48 sm:h-64 flex flex-col justify-between transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-xl select-none"
-          style={{
-            backgroundImage: `linear-gradient(to bottom right, ${from}, ${to})`,
+        <Link
+          href={`/${board.slug}`}
+          className="block group"
+          draggable={false}
+          onClick={(e) => {
+            // 正在拖拽，或刚刚通过长按激活了拖拽模式，均拦截导航
+            if (isDraggingRef.current || isDragMode || justActivatedRef.current)
+              e.preventDefault();
           }}
         >
-          <div className="flex items-start justify-between">
-            <div
-              className="p-2.5 rounded-xl bg-white/20 backdrop-blur-sm"
-              aria-hidden
-            >
-              <Icon className="w-7 h-7 text-white" strokeWidth={2} />
+          <div
+            {...longPressHandlers()}
+            className="rounded-2xl shadow-lg p-6 h-48 sm:h-64 flex flex-col justify-between transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-xl select-none"
+            style={{
+              backgroundImage: `linear-gradient(to bottom right, ${from}, ${to})`,
+            }}
+          >
+            <div className="flex items-start justify-between">
+              <div
+                className="p-2.5 rounded-xl bg-white/20 backdrop-blur-sm"
+                aria-hidden
+              >
+                <Icon className="w-7 h-7 text-white" strokeWidth={2} />
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/80 group-hover:translate-x-0.5 transition-transform" />
             </div>
-            <ChevronRight className="w-5 h-5 text-white/80 group-hover:translate-x-0.5 transition-transform" />
+            <div>
+              <h2 className="text-2xl font-bold text-white drop-shadow-sm">
+                {board.name} ({board.nameEn})
+              </h2>
+              <p className="text-white/90 text-sm mt-0.5">
+                {board.description}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-white drop-shadow-sm">
-              {board.name} ({board.nameEn})
-            </h2>
-            <p className="text-white/90 text-sm mt-0.5">{board.description}</p>
-          </div>
-        </div>
-      </Link>
+        </Link>
+      </motion.div>
     </Reorder.Item>
   );
 }
@@ -81,21 +116,33 @@ export default function BoardsGrid({
   initialSlugs?: string[];
 }) {
   const { boards, reorder } = useBoardOrder(initialSlugs);
+  useScrollRestoration("boards");
+  const { isDragMode, containerRef, longPressHandlers, justActivatedRef } =
+    useDragMode();
 
   return (
-    <Reorder.Group
-      as="div"
-      axis="y"
-      values={boards}
-      onReorder={reorder}
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="flex flex-col gap-4 md:gap-6 w-full max-w-3xl mx-auto"
-    >
-      {boards.map((board) => (
-        <BoardCard key={board.slug} board={board} />
-      ))}
-    </Reorder.Group>
+    <div className="flex flex-col items-center">
+      <Reorder.Group
+        ref={containerRef}
+        as="div"
+        axis="y"
+        values={boards}
+        onReorder={reorder}
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="flex flex-col gap-4 md:gap-6 max-w-3xl w-10/12"
+      >
+        {boards.map((board) => (
+          <BoardCard
+            key={board.slug}
+            board={board}
+            isDragMode={isDragMode}
+            longPressHandlers={longPressHandlers}
+            justActivatedRef={justActivatedRef}
+          />
+        ))}
+      </Reorder.Group>
+    </div>
   );
 }

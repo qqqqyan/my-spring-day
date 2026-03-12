@@ -85,4 +85,6 @@ export const STEPS = {
     { id: "3", title: "心理练习", body: "尝试冥想、呼吸练习或正念练习。" },
     { id: "4", title: "寻求支持", body: "与朋友、家人或专业人士交流感受。" },
   ],
+  frontend: [{ id: "1", title: "架构", body: "数据层与UI层解耦" }],
+  speaking: [{ id: "1", title: "对比", body: "与模板进行对比" }],
 };

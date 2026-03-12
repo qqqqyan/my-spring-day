@@ -6,6 +6,8 @@ import {
   Dumbbell,
   Sun,
   Brain,
+  Code2,
+  MessageCircle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -91,6 +93,26 @@ export const BOARDS: Board[] = [
     bgGradient: "from-teal-600 to-violet-500",
     shadowColor: "shadow-green-600/25",
   },
+  {
+    slug: "frontend",
+    name: "前端",
+    nameEn: "Frontend",
+    description: "Code, components, and craft.",
+    icon: Code2,
+    color: "bg-cyan-600",
+    bgGradient: "from-cyan-600 to-pink-500",
+    shadowColor: "shadow-cyan-500/25",
+  },
+  {
+    slug: "speaking",
+    name: "口语",
+    nameEn: "Speaking",
+    description: "Fluency, confidence, and expression.",
+    icon: MessageCircle,
+    color: "bg-green-600",
+    bgGradient: "from-emerald-500 to-amber-400",
+    shadowColor: "shadow-emerald-500/25",
+  },
 ];
 
 export function getBoardBySlug(slug: string): Board | undefined {
@@ -111,6 +133,10 @@ const COLOR_HEX: Record<string, string> = {
   "lime-400": "#a3e635",
   "sky-400": "#38bdf8",
   "violet-500": "#8b5cf6",
+  "cyan-600": "#0891b2",
+  "blue-400": "#60a5fa",
+  "emerald-500": "#10b981",
+  "cyan-400": "#22d3ee",
 };
 
 /** Parse bgGradient like "from-indigo-600 to-pink-500" → [hex1, hex2] */

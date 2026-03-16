@@ -1,8 +1,6 @@
 import {
   Calendar,
   Clock,
-  ImageIcon,
-  Video,
   Mic,
   FileText,
   Quote,
@@ -10,24 +8,10 @@ import {
 import { getDiariesBySlug, getAllDiaries } from "@/lib/actions/diary";
 import type { Attachment } from "@/lib/types/diary";
 import { getBoardBySlug, parseGradientColors } from "@/lib/data/boardsData";
+import { ImageGallery } from "./ImagePreview";
 
-function AttachmentRenderer({ attachment }: { attachment: Attachment }) {
+function NonImageAttachment({ attachment }: { attachment: Attachment }) {
   const { file_type, public_url, file_name } = attachment;
-
-  if (file_type.startsWith("image/")) {
-    return (
-      <div className="rounded-xl overflow-hidden border border-slate-100 relative group">
-        <img
-          src={public_url}
-          alt={file_name}
-          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-          <ImageIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 drop-shadow-md" />
-        </div>
-      </div>
-    );
-  }
 
   if (file_type.startsWith("video/")) {
     return (
@@ -158,17 +142,22 @@ export default async function TimelineLog(props: Props) {
                     </div>
                   )}
 
-                  {diary.attachments.length > 0 && (
-                    <div
-                      className={`mt-4 gap-2 ${
-                        diary.attachments.length === 1 ? "" : "grid grid-cols-2"
-                      }`}
-                    >
-                      {diary.attachments.map((att) => (
-                        <AttachmentRenderer key={att.id} attachment={att} />
-                      ))}
-                    </div>
-                  )}
+                  {diary.attachments.length > 0 && (() => {
+                    const images = diary.attachments
+                      .filter((a) => a.file_type.startsWith("image/"))
+                      .map((a) => ({ id: a.id, src: a.public_url, alt: a.file_name }));
+                    const others = diary.attachments.filter(
+                      (a) => !a.file_type.startsWith("image/")
+                    );
+                    return (
+                      <div className="mt-4 space-y-2">
+                        {images.length > 0 && <ImageGallery images={images} />}
+                        {others.map((att) => (
+                          <NonImageAttachment key={att.id} attachment={att} />
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>

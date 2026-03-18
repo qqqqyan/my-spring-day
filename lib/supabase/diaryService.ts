@@ -2,6 +2,7 @@ import type { Diary, Attachment } from "@/lib/types/diary";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const CDN_URL = process.env.NEXT_PUBLIC_DIARY_CDN_URL;
 
 const HEADERS = {
   apikey: KEY,
@@ -14,7 +15,9 @@ type RawDiary = Omit<Diary, "attachments"> & { attachments: RawAttachment[] };
 function mapPublicUrl(att: RawAttachment): Attachment {
   return {
     ...att,
-    public_url: `${SUPABASE_URL}/storage/v1/object/public/diary-attachments/${att.storage_path}`,
+    public_url: CDN_URL
+      ? `${CDN_URL}/${att.storage_path}`
+      : `${SUPABASE_URL}/storage/v1/object/public/diary-attachments/${att.storage_path}`,
   };
 }
 

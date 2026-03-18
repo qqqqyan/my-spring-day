@@ -1,10 +1,20 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import TimelineLog from "@/components/TimelineLog";
-import { getBoardBySlug, parseGradientColors } from "@/lib/data/boardsData";
+import {
+  BOARDS,
+  getBoardBySlug,
+  parseGradientColors,
+} from "@/lib/data/boardsData";
 import StartupCommands from "./components/StartupCommands";
 import AIChatDrawer from "./components/AIChatDrawer";
 import { NewLogModal } from "./components/NewLogModal";
+
+export const revalidate = 60;
+
+export function generateStaticParams() {
+  return BOARDS.map((b) => ({ slug: b.slug }));
+}
 
 type Props = { params: Promise<{ slug: string }> };
 

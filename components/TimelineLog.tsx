@@ -5,7 +5,7 @@ import {
   FileText,
   Quote,
 } from "lucide-react";
-import { getDiariesBySlug, getAllDiaries } from "@/lib/actions/diary";
+import { getDiariesBySlug, getAllDiaries } from "@/lib/supabase/diaryService";
 import type { Attachment } from "@/lib/types/diary";
 import { getBoardBySlug, parseGradientColors } from "@/lib/data/boardsData";
 import { ImageGallery } from "./ImagePreview";

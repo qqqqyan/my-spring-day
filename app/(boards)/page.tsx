@@ -11,7 +11,7 @@ export default async function BoardsPage() {
     try {
       initialSlugs = JSON.parse(decodeURIComponent(raw));
     } catch {
-      // malformed cookie — use default
+      initialSlugs = undefined;
     }
   }
   return (

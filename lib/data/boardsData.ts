@@ -230,8 +230,13 @@ export type BoardTheme = {
   blobs: [string, string, string];
 };
 
-export function buildBoardTheme(overlay: string): BoardTheme {
-  const [f, v, t] = parseOverlayColors(overlay);
+export function buildBoardTheme(overlay?: string): BoardTheme {
+  let f, v, t;
+  if (overlay) {
+    [f, v, t] = parseOverlayColors(overlay);
+  } else {
+    [f, v, t] = ["#84cc16", "#10b981", "#22c55e"];
+  }
   const [h, s, l] = hexToHsl(v);
   const mutedS = Math.max(s - 35, 30);
   const accentHex = hslToHex(h, mutedS, l);

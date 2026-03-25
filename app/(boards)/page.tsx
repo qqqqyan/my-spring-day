@@ -1,7 +1,8 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { Reorder } from "framer-motion";
-import { Sparkles, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import BoardCard from "./components/BoardCard";
 import { useBoardOrder } from "./hooks/useBoardOrder";
 import { useDragMode } from "./hooks/useDragMode";
@@ -68,13 +69,33 @@ function NavItem({
 
 export default function BoardsPage() {
   const { boards, reorder } = useBoardOrder();
-  useScrollRestoration("boards");
-  const { isDragMode, deactivate, containerRef, longPressHandlers, justActivatedRef } =
-    useDragMode();
+  const { restoredSection, saveSection } = useScrollRestoration("boards");
+  const {
+    isDragMode,
+    deactivate,
+    containerRef,
+    longPressHandlers,
+    justActivatedRef,
+  } = useDragMode();
 
-  const [activeSection, setActiveSection] = useState("welcome");
+  const [activeSection, setActiveSection] = useState(
+    restoredSection ?? "welcome",
+  );
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+  const hasRestoredRef = useRef(false);
+
+  // 返回时还原到上次停留的 section
+  // boards 由 useEffect 异步加载，需等 boards 非空后再执行
+  useEffect(() => {
+    if (!restoredSection || hasRestoredRef.current || boards.length === 0)
+      return;
+    const el = sectionRefs.current[restoredSection];
+    if (el) {
+      el.scrollIntoView({ behavior: "instant" });
+      hasRestoredRef.current = true;
+    }
+  }, [boards, restoredSection]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -84,7 +105,9 @@ export default function BoardsPage() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-            setActiveSection(entry.target.id);
+            const slug = entry.target.id;
+            setActiveSection(slug);
+            saveSection(slug);
           }
         });
       },
@@ -94,7 +117,7 @@ export default function BoardsPage() {
     const sections = container.querySelectorAll("[data-section]");
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
-  }, [boards]);
+  }, [boards, saveSection]);
 
   const scrollTo = useCallback((id: string) => {
     sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth" });
@@ -122,7 +145,6 @@ export default function BoardsPage() {
                 : "text-white/60 hover:text-white/90 hover:bg-white/10"
             }`}
           >
-            <Sparkles className="inline-block w-3.5 h-3.5 mr-1 -mt-0.5" />
             首页
           </button>
 
@@ -145,6 +167,19 @@ export default function BoardsPage() {
               />
             ))}
           </Reorder.Group>
+
+          <Link
+            href={"/logs"}
+            onClick={() => {
+              if (isDragMode) {
+                deactivate();
+                return;
+              }
+            }}
+            className="shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 text-white/60 hover:text-white/90 hover:bg-white/10"
+          >
+            所有
+          </Link>
         </div>
       </nav>
 

@@ -4,14 +4,16 @@ import { useState } from "react";
 import { X, ListChecks } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { STEPS } from "@/lib/data/stepsData";
+import type { BoardTheme } from "@/lib/data/boardsData";
 
 export default function StartupCommands({
   slug,
-  accentColor,
+  theme,
 }: {
   slug: string;
-  accentColor: string;
+  theme: BoardTheme;
 }) {
+  const { accent: accentColor } = theme;
   const [open, setOpen] = useState(false);
 
   const steps = STEPS[slug as keyof typeof STEPS] || [];
@@ -52,11 +54,11 @@ export default function StartupCommands({
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-slate-50 shadow-2xl z-50 flex flex-col"
+            transition={{ type: "string", damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 bottom-0 w-full max-w-md shadow-2xl z-50 flex flex-col backdrop-blur-xl border-l bg-white/60 border-white/60"
           >
             {/* Header */}
-            <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200">
+            <header className="flex items-center justify-between px-6 py-4 border-b">
               <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
                 <ListChecks className="w-5 h-5 text-slate-500" />
                 启动步骤

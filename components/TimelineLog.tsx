@@ -1,13 +1,11 @@
-import {
-  Calendar,
-  Clock,
-  Mic,
-  FileText,
-  Quote,
-} from "lucide-react";
+import { Calendar, Clock, Mic, FileText, Quote } from "lucide-react";
 import { getDiariesBySlug, getAllDiaries } from "@/lib/supabase/diaryService";
 import type { Attachment } from "@/lib/types/diary";
-import { getBoardBySlug, parseGradientColors } from "@/lib/data/boardsData";
+import {
+  getBoardBySlug,
+  buildBoardTheme,
+  type BoardTheme,
+} from "@/lib/data/boardsData";
 import { ImageGallery } from "./ImagePreview";
 
 function NonImageAttachment({ attachment }: { attachment: Attachment }) {
@@ -47,14 +45,19 @@ function NonImageAttachment({ attachment }: { attachment: Attachment }) {
 }
 
 type Props =
-  | { primaryColor: string; slug: string }
-  | { slug?: undefined; primaryColor?: undefined };
+  | { theme: BoardTheme; slug: string }
+  | { slug?: undefined; theme?: undefined };
 
-function getColorForSlug(slug: string): string {
+function getThemeForSlug(slug: string): BoardTheme {
   const board = getBoardBySlug(slug);
-  if (!board) return "#3b82f6";
-  const [primary] = parseGradientColors(board.bgGradient);
-  return primary;
+  if (!board)
+    return {
+      accent: "#3b82f6",
+      light: "rgba(59,130,246,0.10)",
+      dark: "rgba(59,130,246,0.35)",
+      blobs: ["#3b82f6", "#6366f1", "#8b5cf6"] as [string, string, string],
+    };
+  return buildBoardTheme(board.overlay);
 }
 
 export default async function TimelineLog(props: Props) {
@@ -74,12 +77,16 @@ export default async function TimelineLog(props: Props) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4 sm:px-0">
-      <div className="relative border-l-2 border-slate-200 ml-4 sm:ml-6 space-y-12">
+    <div className="max-w-3xl mx-auto py-8 px-4 pt-0 sm:px-0 text-black/60">
+      <div className="relative ml-4 sm:ml-6 space-y-12">
+        {/* Vertical line */}
+        <div className="absolute left-0 top-0 bottom-32 w-px h-full bg-white/60" />
+
         {diaries.map((diary, index) => {
-          const color = showAll
-            ? getColorForSlug(diary.slug)
-            : props.primaryColor;
+          const entryTheme = showAll
+            ? getThemeForSlug(diary.slug)
+            : props.theme;
+          const color = entryTheme.accent;
           const board = showAll ? getBoardBySlug(diary.slug) : undefined;
 
           const date = new Date(diary.created_at);
@@ -102,11 +109,20 @@ export default async function TimelineLog(props: Props) {
             >
               {/* Timeline Dot */}
               <div
-                className="absolute -left-[9px] top-2 w-4 h-4 rounded-full border-4 border-white shadow-sm"
-                style={{ backgroundColor: color }}
-              />
+                className={`absolute -left-[9px] top-2 w-4 h-4 rounded-full`}
+                style={{
+                  backgroundColor: entryTheme.light,
+                }}
+              >
+                <div
+                  className="w-2 h-2 mx-auto relative top-1 rounded-full"
+                  style={{
+                    backgroundColor: entryTheme.accent,
+                  }}
+                ></div>
+              </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow">
+              <div className="rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow bg-white/10">
                 <div className="p-5 sm:p-6">
                   <div className="flex items-center gap-4 text-sm text-slate-500 mb-3">
                     <div className="flex items-center gap-1.5 font-medium text-slate-700">
@@ -142,22 +158,29 @@ export default async function TimelineLog(props: Props) {
                     </div>
                   )}
 
-                  {diary.attachments.length > 0 && (() => {
-                    const images = diary.attachments
-                      .filter((a) => a.file_type.startsWith("image/"))
-                      .map((a) => ({ id: a.id, src: a.public_url, alt: a.file_name }));
-                    const others = diary.attachments.filter(
-                      (a) => !a.file_type.startsWith("image/")
-                    );
-                    return (
-                      <div className="mt-4 space-y-2">
-                        {images.length > 0 && <ImageGallery images={images} />}
-                        {others.map((att) => (
-                          <NonImageAttachment key={att.id} attachment={att} />
-                        ))}
-                      </div>
-                    );
-                  })()}
+                  {diary.attachments.length > 0 &&
+                    (() => {
+                      const images = diary.attachments
+                        .filter((a) => a.file_type.startsWith("image/"))
+                        .map((a) => ({
+                          id: a.id,
+                          src: a.public_url,
+                          alt: a.file_name,
+                        }));
+                      const others = diary.attachments.filter(
+                        (a) => !a.file_type.startsWith("image/"),
+                      );
+                      return (
+                        <div className="mt-4 space-y-2">
+                          {images.length > 0 && (
+                            <ImageGallery images={images} />
+                          )}
+                          {others.map((att) => (
+                            <NonImageAttachment key={att.id} attachment={att} />
+                          ))}
+                        </div>
+                      );
+                    })()}
                 </div>
               </div>
             </div>

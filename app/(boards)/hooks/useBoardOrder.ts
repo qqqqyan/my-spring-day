@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { BOARDS, type Board } from "@/lib/data/boardsData";
 
 const LS_KEY = "boards-order";
@@ -39,10 +39,12 @@ export function orderBoardsBySlugs(slugs: string[]): Board[] {
 }
 
 export function useBoardOrder() {
-  const [boards, setBoards] = useState<Board[]>(() => {
+  const [boards, setBoards] = useState<Board[]>([]);
+
+  useEffect(() => {
     const slugs = loadFromStorage();
-    return slugs ? orderBoardsBySlugs(slugs) : BOARDS;
-  });
+    setBoards(slugs ? orderBoardsBySlugs(slugs) : BOARDS);
+  }, []);
 
   const reorder = useCallback((newOrder: Board[]) => {
     setBoards(newOrder);

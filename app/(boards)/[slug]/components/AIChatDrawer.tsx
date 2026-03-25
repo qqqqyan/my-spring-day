@@ -3,14 +3,20 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send } from "lucide-react";
+import type { BoardTheme } from "@/lib/data/boardsData";
 
 const MOCK_MESSAGES = [
-  { id: "1", role: "assistant" as const, text: "你好，我是这个板块的 AI 助手。有什么想记录或讨论的吗？" },
+  {
+    id: "1",
+    role: "assistant" as const,
+    text: "你好，我是这个板块的 AI 助手。有什么想记录或讨论的吗？",
+  },
   { id: "2", role: "user" as const, text: "今天练了一个小时，感觉不错。" },
   { id: "3", role: "assistant" as const, text: "很棒！要帮你记到时间线里吗？" },
 ];
 
-export default function AIChatDrawer({ accentColor }: { accentColor: string }) {
+export default function AIChatDrawer({ theme }: { theme: BoardTheme }) {
+  const { accent: accentColor } = theme;
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
 
@@ -52,9 +58,9 @@ export default function AIChatDrawer({ accentColor }: { accentColor: string }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-50 flex flex-col"
+            className="fixed top-0 right-0 bottom-0 w-full max-w-md shadow-2xl z-50 flex flex-col backdrop-blur-xl border-l bg-white/60 border-white/60"
           >
-            <header className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
+            <header className="flex items-center justify-between px-4 py-3 border-b">
               <h2 className="font-semibold text-slate-800">AI 对话</h2>
               <button
                 type="button"
@@ -77,9 +83,13 @@ export default function AIChatDrawer({ accentColor }: { accentColor: string }) {
                     className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
                       msg.role === "user"
                         ? "text-white"
-                        : "bg-slate-100 text-slate-800"
+                        : "bg-white/60 text-slate-800"
                     }`}
-                    style={msg.role === "user" ? { backgroundColor: accentColor } : undefined}
+                    style={
+                      msg.role === "user"
+                        ? { backgroundColor: accentColor }
+                        : undefined
+                    }
                   >
                     <p className="text-sm leading-relaxed">{msg.text}</p>
                   </div>
@@ -88,15 +98,17 @@ export default function AIChatDrawer({ accentColor }: { accentColor: string }) {
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-slate-200 bg-white">
+            <div className="p-4 border-t">
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="输入消息..."
-                  className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
-                  style={{ "--tw-ring-color": accentColor } as React.CSSProperties}
+                  className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:accent-2 focus:border-transparent"
+                  style={
+                    { "--tw-accent-color": accentColor } as React.CSSProperties
+                  }
                 />
                 <button
                   type="button"

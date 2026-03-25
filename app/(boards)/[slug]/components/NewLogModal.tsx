@@ -15,13 +15,15 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Modal } from "@/components/Modal";
 import { createDiary } from "@/lib/actions/diary";
+import type { BoardTheme } from "@/lib/data/boardsData";
 
 interface NewLogModalProps {
-  accentColor: string;
+  theme: BoardTheme;
   slug: string;
 }
 
-export function NewLogModal({ accentColor, slug }: NewLogModalProps) {
+export function NewLogModal({ theme, slug }: NewLogModalProps) {
+  const { accent: accentColor, light, dark } = theme;
   const [open, setOpen] = useState(false);
 
   const [content, setContent] = useState("");
@@ -93,15 +95,23 @@ export function NewLogModal({ accentColor, slug }: NewLogModalProps) {
       </motion.button>
 
       {/* Modal */}
-      <Modal isOpen={open} onClose={() => setOpen(false)} title="New Log">
+      <Modal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        title="New Log"
+        containerStyle={{
+          backgroundColor: "rgba(255,255,255,0.3)",
+          borderColor: "rgba(255,255,255,0.6)",
+        }}
+      >
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="what happened today..."
-              className="w-full h-40 p-5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-2 focus:border-transparent resize-none outline-none transition-all text-slate-700"
-              style={{ "--tw-ring-color": accentColor } as React.CSSProperties}
+              className="w-full h-40 p-5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:dark-2 focus:border-transparent resize-none outline-none transition-all text-slate-700"
+              style={{ "--tw-dark-color": accentColor } as React.CSSProperties}
               required={files.length === 0}
             />
           </div>
@@ -122,11 +132,11 @@ export function NewLogModal({ accentColor, slug }: NewLogModalProps) {
                     value={quote}
                     onChange={(e) => setQuote(e.target.value)}
                     placeholder="worth remembering..."
-                    className="w-full p-4 pl-12 bg-slate-50 border-l-4 border-y border-r border-slate-200 rounded-r-2xl focus:bg-white focus:ring-2 focus:border-transparent resize-none outline-none transition-all text-slate-600 italic"
+                    className="w-full p-4 pl-12 bg-slate-50 border-l-4 border-y border-r border-slate-200 rounded-r-2xl focus:bg-white focus:dark-2 focus:border-transparent resize-none outline-none transition-all text-slate-600 italic"
                     style={
                       {
                         borderLeftColor: accentColor,
-                        "--tw-ring-color": accentColor,
+                        "--tw-dark-color": accentColor,
                       } as React.CSSProperties
                     }
                     rows={2}
@@ -186,7 +196,7 @@ export function NewLogModal({ accentColor, slug }: NewLogModalProps) {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t border-slate-100 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <button
                 type="button"

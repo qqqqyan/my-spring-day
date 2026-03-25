@@ -7,9 +7,16 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  containerStyle?: React.CSSProperties;
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  containerStyle,
+}: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -19,16 +26,20 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/10 backdrop-blur-sm z-50"
           />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col pointer-events-auto"
+              className="rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col pointer-events-auto backdrop-blur-xl border border-white/20"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.85)",
+                ...containerStyle,
+              }}
             >
-              <div className="flex items-center justify-between p-6 border-b border-slate-100">
+              <div className="flex items-center justify-between p-6">
                 <h2 className="text-xl font-bold text-slate-900">{title}</h2>
                 <button
                   onClick={onClose}

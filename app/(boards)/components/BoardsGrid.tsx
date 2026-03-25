@@ -15,12 +15,8 @@ const container = {
   },
 };
 
-export default function BoardsGrid({
-  initialSlugs,
-}: {
-  initialSlugs?: string[];
-}) {
-  const { boards, reorder } = useBoardOrder(initialSlugs);
+export default function BoardsGrid() {
+  const { boards, reorder } = useBoardOrder();
   useScrollRestoration("boards");
   const { isDragMode, containerRef, longPressHandlers, justActivatedRef } =
     useDragMode();

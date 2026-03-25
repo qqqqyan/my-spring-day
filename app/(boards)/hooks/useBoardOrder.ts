@@ -3,11 +3,23 @@
 import { useState, useCallback } from "react";
 import { BOARDS, type Board } from "@/lib/data/boardsData";
 
-const COOKIE_KEY = "boards-order";
+const LS_KEY = "boards-order";
 
-function saveToCookie(slugs: string[]) {
-  const value = JSON.stringify(slugs);
-  document.cookie = `${COOKIE_KEY}=${encodeURIComponent(value)};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
+function loadFromStorage(): string[] | null {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveToStorage(slugs: string[]) {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(slugs));
+  } catch {
+    // ignore
+  }
 }
 
 export function orderBoardsBySlugs(slugs: string[]): Board[] {
@@ -26,14 +38,15 @@ export function orderBoardsBySlugs(slugs: string[]): Board[] {
   return ordered;
 }
 
-export function useBoardOrder(initialSlugs?: string[]) {
-  const [boards, setBoards] = useState<Board[]>(() =>
-    initialSlugs ? orderBoardsBySlugs(initialSlugs) : BOARDS,
-  );
+export function useBoardOrder() {
+  const [boards, setBoards] = useState<Board[]>(() => {
+    const slugs = loadFromStorage();
+    return slugs ? orderBoardsBySlugs(slugs) : BOARDS;
+  });
 
   const reorder = useCallback((newOrder: Board[]) => {
     setBoards(newOrder);
-    saveToCookie(newOrder.map((b) => b.slug));
+    saveToStorage(newOrder.map((b) => b.slug));
   }, []);
 
   return { boards, reorder };

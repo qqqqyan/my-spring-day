@@ -1,19 +1,12 @@
 import Link from "next/link";
 import { Clock } from "lucide-react";
-import { cookies } from "next/headers";
-import BoardsGrid from "./components/BoardsGrid";
+import dynamic from "next/dynamic";
 
-export default async function BoardsPage() {
-  const cookieStore = await cookies();
-  const raw = cookieStore.get("boards-order")?.value;
-  let initialSlugs: string[] | undefined;
-  if (raw) {
-    try {
-      initialSlugs = JSON.parse(decodeURIComponent(raw));
-    } catch {
-      initialSlugs = undefined;
-    }
-  }
+const BoardsGrid = dynamic(() => import("./components/BoardsGrid"), {
+  ssr: false,
+});
+
+export default function BoardsPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 p-6 md:p-10">
       <header className="mb-10 flex items-center justify-between">
@@ -33,7 +26,7 @@ export default async function BoardsPage() {
           Logs
         </Link>
       </header>
-      <BoardsGrid initialSlugs={initialSlugs} />
+      <BoardsGrid />
     </main>
   );
 }

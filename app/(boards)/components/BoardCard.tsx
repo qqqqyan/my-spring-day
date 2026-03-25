@@ -26,7 +26,10 @@ export const BoardCard = memo(function BoardCard({
         className="absolute inset-0 w-full h-full object-cover"
         loading="lazy"
       />
-      <div className={`absolute inset-0 bg-gradient-to-b ${board.overlay}`} />
+      <div
+        className={`absolute -z-10 inset-0 bg-gradient-to-b ${board.overlay}`}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
 
       {/* Floating decorative icon — top-right only */}
       <Icon

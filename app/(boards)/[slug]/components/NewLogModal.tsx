@@ -23,7 +23,7 @@ interface NewLogModalProps {
 }
 
 export function NewLogModal({ theme, slug }: NewLogModalProps) {
-  const { accent: accentColor, light, dark } = theme;
+  const { accent: accentColor } = theme;
   const [open, setOpen] = useState(false);
 
   const [content, setContent] = useState("");

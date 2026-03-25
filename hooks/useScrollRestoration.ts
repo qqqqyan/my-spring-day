@@ -8,7 +8,6 @@ export function useScrollRestoration(key: string) {
   // 读取上次停留的 section；首次访问时 sessionStorage 为空，返回 null
   const restoredSection = useMemo(() => {
     if (typeof window === "undefined") return null;
-    console.log(sessionStorage.getItem(storageKey));
     return sessionStorage.getItem(storageKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -8,6 +8,7 @@ import {
   Brain,
   Code2,
   MessageCircle,
+  Theater,
   Heart,
   type LucideIcon,
 } from "lucide-react";
@@ -113,6 +114,16 @@ export const BOARDS: Board[] = [
     image: "/speak.webp",
     overlay: "from-sky-950/60 via-cyan-900/40 to-teal-950/70",
     icon: MessageCircle,
+  },
+  {
+    slug: "talk-show",
+    name: "脱口秀",
+    nameEn: "Stand-up Comedy",
+    description: "把生活里的荒诞拧成包袱，在舞台上练习坦诚和幽默。",
+    descriptionEn: "Bits, timing, and stage presence.",
+    image: "/talk.png",
+    overlay: "from-zinc-950/60 via-rose-900/40 to-amber-950/70",
+    icon: Theater,
   },
   {
     slug: "redemption",

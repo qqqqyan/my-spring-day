@@ -87,4 +87,10 @@ export const STEPS = {
   ],
   frontend: [{ id: "1", title: "架构", body: "数据层与UI层解耦" }],
   speaking: [{ id: "1", title: "对比", body: "与模板进行对比" }],
+  "talk-show": [
+    { id: "1", title: "观察素材", body: "记录今天让你有反应的人、事、场景或一句话。" },
+    { id: "2", title: "写段子", body: "把素材改写成有视角、有铺垫、有反转的文本。" },
+    { id: "3", title: "开口练习", body: "读出来感受节奏，调整停顿、重音和语气。" },
+    { id: "4", title: "复盘笑点", body: "记录哪里有效、哪里尴尬，下次继续打磨。" },
+  ],
 };

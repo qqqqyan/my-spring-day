@@ -3,7 +3,6 @@ import { ArrowLeft } from "lucide-react";
 import TimelineLog from "@/components/TimelineLog";
 import { BOARDS, getBoardBySlug, buildBoardTheme } from "@/lib/data/boardsData";
 import StartupCommands from "./components/StartupCommands";
-import AIChatDrawer from "./components/AIChatDrawer";
 import { NewLogModal } from "./components/NewLogModal";
 
 export const revalidate = 60;
@@ -97,9 +96,8 @@ export default async function BoardDetailPage({ params }: Props) {
           <TimelineLog theme={theme} slug={slug} />
         </div>
 
-        {/* Drawers & Modals */}
+        {/* Fixed tools & modals */}
         <StartupCommands slug={slug} theme={theme} />
-        <AIChatDrawer theme={theme} />
         <NewLogModal theme={theme} slug={slug} />
       </div>
     </main>

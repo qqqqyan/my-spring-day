@@ -85,7 +85,7 @@ export function NewLogModal({ theme, slug }: NewLogModalProps) {
       <motion.button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-[10.5rem] right-6 z-40 w-14 h-14 rounded-full text-white shadow-lg hover:brightness-110 flex items-center justify-center"
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full text-white shadow-lg hover:brightness-110 flex items-center justify-center"
         style={{ backgroundColor: accentColor }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.98 }}

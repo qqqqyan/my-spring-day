@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Reorder } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import BoardCard from "./components/BoardCard";
 import { useBoardOrder } from "./hooks/useBoardOrder";
 import { useDragMode } from "./hooks/useDragMode";
@@ -81,6 +81,7 @@ export default function BoardsPage() {
   const [activeSection, setActiveSection] = useState(
     restoredSection ?? "welcome",
   );
+  const [isNavExpanded, setIsNavExpanded] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const hasRestoredRef = useRef(false);
@@ -122,6 +123,20 @@ export default function BoardsPage() {
   const scrollTo = useCallback((id: string) => {
     sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth" });
   }, []);
+  const visibleNavBoards = isNavExpanded ? boards : boards.slice(0, 5);
+  const reorderNavBoards = useCallback(
+    (newOrder: Board[]) => {
+      if (isNavExpanded) {
+        reorder(newOrder);
+        return;
+      }
+
+      const visibleSlugs = new Set(newOrder.map((board) => board.slug));
+      const rest = boards.filter((board) => !visibleSlugs.has(board.slug));
+      reorder([...newOrder, ...rest]);
+    },
+    [boards, isNavExpanded, reorder],
+  );
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
@@ -148,26 +163,6 @@ export default function BoardsPage() {
             首页
           </button>
 
-          <Reorder.Group
-            as="div"
-            axis="x"
-            values={boards}
-            onReorder={reorder}
-            className="flex items-center gap-1"
-          >
-            {boards.map((board) => (
-              <NavItem
-                key={board.slug}
-                board={board}
-                isActive={activeSection === board.slug}
-                onScrollTo={scrollTo}
-                isDragMode={isDragMode}
-                longPressHandlers={longPressHandlers}
-                justActivatedRef={justActivatedRef}
-              />
-            ))}
-          </Reorder.Group>
-
           <Link
             href={"/logs"}
             onClick={() => {
@@ -180,6 +175,47 @@ export default function BoardsPage() {
           >
             所有
           </Link>
+
+          <Reorder.Group
+            as="div"
+            axis="x"
+            values={visibleNavBoards}
+            onReorder={reorderNavBoards}
+            className="flex items-center gap-1"
+          >
+            {visibleNavBoards.map((board) => (
+              <NavItem
+                key={board.slug}
+                board={board}
+                isActive={activeSection === board.slug}
+                onScrollTo={scrollTo}
+                isDragMode={isDragMode}
+                longPressHandlers={longPressHandlers}
+                justActivatedRef={justActivatedRef}
+              />
+            ))}
+          </Reorder.Group>
+
+          {boards.length > 5 && (
+            <button
+              type="button"
+              aria-label={isNavExpanded ? "收起标签" : "展开更多标签"}
+              onClick={() => {
+                if (isDragMode) {
+                  deactivate();
+                  return;
+                }
+                setIsNavExpanded((expanded) => !expanded);
+              }}
+              className="shrink-0 w-8 h-8 inline-flex items-center justify-center rounded-full text-white/60 hover:text-white/90 hover:bg-white/10 transition-all duration-300"
+            >
+              <ChevronRight
+                className={`w-4 h-4 transition-transform duration-300 ${
+                  isNavExpanded ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+          )}
         </div>
       </nav>
 
